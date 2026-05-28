@@ -1,6 +1,7 @@
 #ifndef _WASM_NATIVE_MEMORY_H
 #define _WASM_NATIVE_MEMORY_H
 
+#include "bh_common.h"
 #include "../include/wasm_export.h"
 
 #ifdef __cplusplus
