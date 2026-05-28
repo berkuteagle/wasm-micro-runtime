@@ -27,6 +27,14 @@ typedef struct NativeSymbol {
     void *attachment;
 } NativeSymbol;
 
+typedef struct NativeMemory {
+    const char *memory;
+    uint8_t *buffer;
+    uint32_t num_bytes_per_page;
+    uint32_t init_page_count;
+    uint32_t max_page_count;
+} NativeMemory;
+
 /* clang-format off */
 #define EXPORT_WASM_API(symbol) \
     { #symbol, (void *)symbol, NULL, NULL }

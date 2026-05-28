@@ -1843,6 +1843,46 @@ wasm_runtime_unregister_natives(const char *module_name,
                                 NativeSymbol *native_symbols);
 
 /**
+ * Register native memories with same module name
+ *
+ * Note: The array `native_memories` should not be read-only because the
+ * library can modify it in-place.
+ *
+ * Note: After successful call of this function, the array `native_memories`
+ * is owned by the library.
+ *
+ * @param module_name the module name of the native memories
+ * @param native_memories specifies an array of NativeMemory structures which
+ *        contain the names, memory pointers and memory options
+ *        Note: WASM runtime will not allocate memory to clone the data, so
+ *              user must ensure the array can be used forever
+ * @param n_native_memories specifies the number of native memories in the array
+ *
+ * @return true if success, false otherwise
+ */
+WASM_RUNTIME_API_EXTERN bool
+wasm_native_memory_register_memories(const char *module_name,
+                                     NativeMemory *native_memories,
+                                     uint32 n_native_memories);
+
+/**
+ * Undo wasm_native_memory_register_memories
+ *
+ * @param module_name     Should be the same as the corresponding
+ *                        wasm_native_memory_register_memories.
+ *                        (Same in term of strcmp.)
+ *
+ * @param native_memories Should be the same as the corresponding
+ *                        wasm_native_memory_register_memories.
+ *                        (Same in term of pointer comparison.)
+ *
+ * @return true if success, false otherwise
+ */
+WASM_RUNTIME_API_EXTERN bool
+wasm_native_memory_unregister_memories(const char *module_name,
+                                       NativeMemory *native_memories);
+
+/**
  * Get an export global instance
  *
  * @param module_inst the module instance
