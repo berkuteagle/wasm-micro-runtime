@@ -8,6 +8,7 @@
 
 #include "pico/stdlib.h"
 #include "pico/time.h"
+#include "pico/multicore.h"
 
 /* ---- init ---- */
 
@@ -112,8 +113,13 @@ korp_tid os_self_thread(void) { return 0; }
  * rp2350 RISC-V: same convention
  */
 extern char __StackBottom;
+extern char __StackOneBottom;
 
-uint8 *os_thread_get_stack_boundary(void) { return (uint8 *)&__StackBottom; }
+uint8 *os_thread_get_stack_boundary(void) {
+  if (get_core_num() == 0)
+    return (uint8 *)&__StackBottom;
+  return (uint8 *)&__StackOneBottom;
+}
 
 void os_thread_jit_write_protect_np(bool enabled) { (void)enabled; }
 
