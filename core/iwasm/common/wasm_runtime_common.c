@@ -502,6 +502,10 @@ wasm_runtime_env_init(void)
         goto fail1;
     }
 
+    if (wasm_native_memory_init() == false) {
+        goto fail1;
+    }
+
 #if WASM_ENABLE_MULTI_MODULE
     if (BHT_OK != os_mutex_init(&registered_module_list_lock)) {
         goto fail2;
@@ -611,6 +615,7 @@ fail3:
 fail2:
 #endif
     wasm_native_destroy();
+    wasm_native_memory_destroy();
 fail1:
     bh_platform_destroy();
 
@@ -733,6 +738,7 @@ wasm_runtime_destroy_internal(void)
 #endif
 
     wasm_native_destroy();
+    wasm_native_memory_destroy();
     bh_platform_destroy();
 
     wasm_runtime_memory_destroy();
@@ -833,6 +839,14 @@ wasm_runtime_full_init_internal(RuntimeInitArgs *init_args)
         && !wasm_runtime_register_natives(init_args->native_module_name,
                                           init_args->native_symbols,
                                           init_args->n_native_symbols)) {
+        wasm_runtime_destroy();
+        return false;
+    }
+
+    if (init_args->n_native_memories > 0 
+        && !wasm_native_memory_register_memories(init_args->native_module_name,
+                                                 init_args->native_memories, 
+                                                 init_args->n_native_memories)) {
         wasm_runtime_destroy();
         return false;
     }

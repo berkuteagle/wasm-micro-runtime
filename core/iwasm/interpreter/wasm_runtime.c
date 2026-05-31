@@ -530,8 +530,28 @@ memories_instantiate(const WASMModule *module, WASMModuleInstance *module_inst,
         uint32 flags = import->u.memory.mem_type.flags;
         uint32 actual_heap_size = heap_size;
 
+        NativeMemory *native_memory = wasm_native_memory_resolve_memory(
+            import->u.memory.module_name, import->u.memory.field_name);
+
+        if (native_memory) {
+            memory->cur_page_count = native_memory->init_page_count;
+            memory->is_memory64 = false;
+            memory->is_shared_memory = false;
+            memory->max_page_count = native_memory->max_page_count;
+            memory->memory_data = native_memory->buffer;
+            memory->num_bytes_per_page = DEFAULT_NUM_BYTES_PER_PAGE;
+            memory->memory_data_size =
+                native_memory->init_page_count * memory->num_bytes_per_page;
+            memory->memory_data_end =
+                native_memory->buffer + memory->memory_data_size;
+            memory->heap_data = memory->memory_data;
+            memory->heap_data_end = memory->memory_data;
+
+            memories[mem_index++] = memory;
+        }
+        else
 #if WASM_ENABLE_MULTI_MODULE != 0
-        if (import->u.memory.import_module != NULL) {
+            if (import->u.memory.import_module != NULL) {
             WASMModuleInstance *module_inst_linked;
 
             if (!(module_inst_linked = get_sub_module_inst(

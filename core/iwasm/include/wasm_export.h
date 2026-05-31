@@ -224,6 +224,9 @@ typedef struct RuntimeInitArgs {
     NativeSymbol *native_symbols;
     uint32_t n_native_symbols;
 
+    NativeMemory *native_memories;
+    uint32_t n_native_memories;
+
     /* maximum thread number, only used when
        WASM_ENABLE_THREAD_MGR is defined */
     uint32_t max_thread_num;

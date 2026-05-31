@@ -10,6 +10,7 @@
 #include "bh_common.h"
 #include "wasm_exec_env.h"
 #include "wasm_native.h"
+#include "wasm_native_memory.h"
 #include "../include/wasm_export.h"
 #include "../interpreter/wasm.h"
 #if WASM_ENABLE_GC != 0
